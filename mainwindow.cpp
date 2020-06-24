@@ -15,6 +15,8 @@ string turn;
 int scoreX = 0;
 int scoreO = 0;
 int reponse;
+bool oldState1;
+bool oldState2;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,8 +35,6 @@ MainWindow::MainWindow(QWidget *parent)
     music->setMedia(QUrl("qrc:/Sound/music.mp3"));
     music->play();
     connect(ui->slider_music,SIGNAL(valueChanged(int)),music,SLOT(setVolume(int)));
-
-
 
     QMessageBox messageBox(QMessageBox::Question,
     tr("Please choose against who you want to play."),
@@ -61,6 +61,8 @@ void MainWindow::newGame(){
         vs_player = true;
         ui->RB_vs_player->setChecked(true);
     }else {
+        oldState1 = vs_computer;
+        oldState2 = vs_player;
         vs_computer = ui->RB_vs_computer->isChecked();
         vs_player = ui->RB_vs_player->isChecked();
     }
@@ -74,13 +76,21 @@ void MainWindow::newGame(){
             msgBox2.setStandardButtons(QMessageBox::Ok);
             msgBox2.setDefaultButton(QMessageBox::Ok);
 
-    if(vs_player){
-       msgBox1.exec();
-    }
-    else if(vs_computer){
-       msgBox2.exec();
+    if(!(oldState1 == vs_computer && oldState2 == vs_player))
+    {
+        if(vs_player){
+           msgBox1.exec();
+        }
+        else if(vs_computer){
+           msgBox2.exec();
+        }
+        scoreO = 0;
+        scoreX = 0;
+        ui->label_O_score->setText(to_string(scoreO).c_str());
+        ui->label_X_score->setText(to_string(scoreX).c_str());
     }
 
+    reponse = 4;
     for (int i = 0; i<3; i++)
         for (int j = 0; j<3; j++)
             board[i][j] = '_';
