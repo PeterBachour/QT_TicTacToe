@@ -6,6 +6,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Tic Tac Toe by Bachour&Deleau");
+
+    //Labels
+    ui->label_win1->setVisible(0);
+    ui->label_win1->setVisible(0);
+
+    //Slider
+    ui->slider_music->setValue(100);
+    QMediaPlayer * music = new QMediaPlayer();
+    music->setMedia(QUrl("qrc:/Sound/music.mp3"));
+    music->play();
+    connect(ui->slider_music,SIGNAL(valueChanged(int)),music,SLOT(setVolume(int)));
 }
 
 MainWindow::~MainWindow()
