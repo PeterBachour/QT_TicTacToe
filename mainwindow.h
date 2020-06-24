@@ -24,6 +24,8 @@ public:
     bool checkDraw();
     void showEndGame();
     bool isAvailableSpot(int x, int y);
+    void newGame();
+
 
 
 private slots:
@@ -37,6 +39,8 @@ private slots:
     void on_place_7_clicked();
     void on_place_8_clicked();
     void on_CB_darkmode_clicked();
+    void on_PB_new_game_clicked();
+
 
 private:
     Ui::MainWindow *ui;

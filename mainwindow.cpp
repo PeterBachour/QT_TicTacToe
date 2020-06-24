@@ -33,16 +33,21 @@ MainWindow::MainWindow(QWidget *parent)
     music->play();
     connect(ui->slider_music,SIGNAL(valueChanged(int)),music,SLOT(setVolume(int)));
 
-    for (int i = 0; i<3; i++)
-        for (int j = 0; j<3; j++)
-            board[i][j] = '_';
-
+    newGame();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::newGame(){
+    for (int i = 0; i<3; i++)
+        for (int j = 0; j<3; j++)
+            board[i][j] = '_';
+}
+
+
 
 bool MainWindow::isAvailableSpot(int x, int y){
     return (board[x][y] == '_');
@@ -294,6 +299,19 @@ void MainWindow::on_CB_darkmode_clicked(){
         ui->label_logo->setStyleSheet("QLabel { background: url(:/images/small_logo_100px.png)}");
 
     }
+}
+
+
+void MainWindow::on_PB_new_game_clicked(){
+    newGame();
+    initializeSpots();
+    enableSpots(true);
+    ui->label_win1->setVisible(0);
+    if(player%2 == 0)
+        turn = "X's turn.";
+    else
+        turn = "O's turn.";
+    ui->label_turn->setText(turn.c_str());
 }
 
 
