@@ -68,7 +68,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>190</y>
+      <y>170</y>
       <width>105</width>
       <height>20</height>
      </rect>
@@ -85,29 +85,6 @@
     </property>
     <property name="checked">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="RB_vs_computer">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>150</y>
-      <width>141</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>VS Computer +</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_bigLogo">
@@ -312,7 +289,7 @@ border: 4px solid black;</string>
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>210</y>
+      <y>200</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -332,7 +309,7 @@ border: 4px solid black;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>210</y>
+      <y>200</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -345,7 +322,7 @@ border: 4px solid black;</string>
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>230</y>
+      <y>220</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -760,11 +737,11 @@ background : rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QRadioButton" name="RB_vs_computer_noob">
+   <widget class="QRadioButton" name="RB_vs_computer">
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>170</y>
+      <y>150</y>
       <width>121</width>
       <height>22</height>
      </rect>
@@ -787,7 +764,7 @@ background : rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>230</y>
+      <y>220</y>
       <width>30</width>
       <height>30</height>
      </rect>
@@ -804,7 +781,6 @@ background : rgb(255, 255, 255);</string>
    <zorder>label_background</zorder>
    <zorder>label_turn</zorder>
    <zorder>RB_vs_player</zorder>
-   <zorder>RB_vs_computer</zorder>
    <zorder>label_bigLogo</zorder>
    <zorder>label_logo</zorder>
    <zorder>label_Select</zorder>
@@ -828,7 +804,7 @@ background : rgb(255, 255, 255);</string>
    <zorder>place_7</zorder>
    <zorder>place_8</zorder>
    <zorder>label_win1</zorder>
-   <zorder>RB_vs_computer_noob</zorder>
+   <zorder>RB_vs_computer</zorder>
    <zorder>CB_darkmode</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
