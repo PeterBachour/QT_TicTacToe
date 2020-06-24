@@ -14,6 +14,7 @@ string winner;
 string turn;
 int scoreX = 0;
 int scoreO = 0;
+int reponse;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,6 +34,17 @@ MainWindow::MainWindow(QWidget *parent)
     music->play();
     connect(ui->slider_music,SIGNAL(valueChanged(int)),music,SLOT(setVolume(int)));
 
+
+
+    QMessageBox messageBox(QMessageBox::Question,
+    tr("Please choose against who you want to play."),
+    tr("Please choose against who you want to play."),
+    QMessageBox::Yes | QMessageBox::No,
+    NULL);
+    messageBox.setButtonText(QMessageBox::Yes, tr("Player"));
+    messageBox.setButtonText(QMessageBox::No, tr("Computer"));
+    reponse = messageBox.exec();
+
     newGame();
 }
 
@@ -42,13 +54,37 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::newGame(){
+    if(reponse == QMessageBox::No){
+        vs_computer = true;
+        ui->RB_vs_computer->setChecked(true);
+    }else if(reponse == QMessageBox::Yes){
+        vs_player = true;
+        ui->RB_vs_player->setChecked(true);
+    }else {
+        vs_computer = ui->RB_vs_computer->isChecked();
+        vs_player = ui->RB_vs_player->isChecked();
+    }
+
+    QMessageBox msgBox1;
+            msgBox1.setText("You are going to play against another the player.");
+            msgBox1.setStandardButtons(QMessageBox::Ok);
+            msgBox1.setDefaultButton(QMessageBox::Ok);
+    QMessageBox msgBox2;
+            msgBox2.setText("You are going to play against a computer.");
+            msgBox2.setStandardButtons(QMessageBox::Ok);
+            msgBox2.setDefaultButton(QMessageBox::Ok);
+
+    if(vs_player){
+       msgBox1.exec();
+    }
+    else if(vs_computer){
+       msgBox2.exec();
+    }
+
     for (int i = 0; i<3; i++)
         for (int j = 0; j<3; j++)
             board[i][j] = '_';
 }
-
-
-
 bool MainWindow::isAvailableSpot(int x, int y){
     return (board[x][y] == '_');
 }
@@ -94,7 +130,6 @@ bool MainWindow::checkDraw() {
     return !empty;
 }
 void MainWindow::showEndGame(){
-
     if(checkwin() || checkDraw()){
         if(checkwin()){
             if(player%2 == 0){
@@ -210,7 +245,6 @@ void MainWindow::enableSpots(bool x){
 }
 
 
-
 void MainWindow::on_place_0_clicked(){
     checkmove(0,0);
 }
@@ -238,7 +272,6 @@ void MainWindow::on_place_7_clicked(){
 void MainWindow::on_place_8_clicked(){
     checkmove(2,2);
 }
-
 void MainWindow::on_CB_darkmode_clicked(){
     if(ui->CB_darkmode->isChecked()){
         ui->label_background->setStyleSheet("QLabel { background-color : black;}");
@@ -300,8 +333,6 @@ void MainWindow::on_CB_darkmode_clicked(){
 
     }
 }
-
-
 void MainWindow::on_PB_new_game_clicked(){
     newGame();
     initializeSpots();
