@@ -15,16 +15,20 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    bool checkwin();
+    bool checkwin(char player);
     void checkmove(int x, int y);
     void initializeSpots();
     void enableSpots(bool x);
     void showSpots();
-    void drawWinLine(int i);
+    void drawWinLine();
     bool checkDraw();
-    void showEndGame();
+    bool showEndGame();
     bool isAvailableSpot(int x, int y);
     void newGame();
+    void minimax(char AIboard[3][3]);
+    int minSearch(char AIboard[3][3]);
+    int maxSearch(char AIboard[3][3]);
+    int score();
 
 
 

@@ -12,6 +12,8 @@ bool vs_computer;
 bool vs_player;
 string winner;
 string turn;
+char player1 = 'X';
+char player2_Ai ='O';
 int scoreX = 0;
 int scoreO = 0;
 int reponse;
@@ -93,55 +95,58 @@ void MainWindow::newGame(){
     reponse = 4;
     for (int i = 0; i<3; i++)
         for (int j = 0; j<3; j++)
-            board[i][j] = '_';
+            board[i][j] = '-';
+
+    if(vs_computer){
+        player = 0;
+        turn = "X's turn.";
+        ui->label_turn->setText(turn.c_str());
+    }
 }
 bool MainWindow::isAvailableSpot(int x, int y){
-    return (board[x][y] == '_');
+    return (board[x][y] == '-');
 }
-bool MainWindow::checkwin(){
-
-    char turn;
-    if(player%2 == 0)
-        turn = 'X';
-    else
-        turn = 'O';
+bool MainWindow::checkwin(char player_turn){
 
     for(int i = 0; i < 3; i++) {
         // Check horizontals
-        if(board[i][0] == turn && board[i][1] == turn
-            && board[i][2] == turn){
-            drawWinLine(i);
+        if(board[i][0] == player_turn && board[i][1] == player_turn && board[i][2] == player_turn){
             return true;
-         }
+        }
         // Check verticals
-    if(board[0][i] == turn && board[1][i] == turn
-        && board[2][i] == turn){
-            drawWinLine(3+i);
+        if(board[0][i] == player_turn && board[1][i] == player_turn && board[2][i] == player_turn){
             return true;
         }
 
     }
     // Check diagonals
-    if (board[0][0] == turn && board[1][1] == turn && board[2][2] == turn) {
-        drawWinLine(6);
+    if (board[0][0] == player_turn && board[1][1] == player_turn && board[2][2] == player_turn) {
         return true;
-    } else if (board[0][2] == turn && board[1][1] == turn && board[2][0] == turn) {
+    } else if (board[0][2] == player_turn && board[1][1] == player_turn && board[2][0] == player_turn) {
         return true;
     }
 
     return false;
 }
 bool MainWindow::checkDraw() {
-    bool empty = false;
+    if (checkwin(player1))
+        return true;
+    if (checkwin(player2_Ai))
+        return true;
+
+
+    bool emptySpace = false;
     for(int i = 0; i < 3; i++) {
-        if(board[i][0] == '_' || board[i][1] == '_' || board[i][2] == '_')
-            empty = true;
+        if(board[i][0] == '-' || board[i][1] == '-' || board[i][2] == '-')
+            emptySpace = true;
     }
-    return !empty;
+    return !emptySpace;
+
 }
-void MainWindow::showEndGame(){
-    if(checkwin() || checkDraw()){
-        if(checkwin()){
+bool MainWindow::showEndGame(){
+
+    if(checkwin(player1) || checkwin(player2_Ai) || checkDraw()){
+        if(checkwin(player1) || checkwin(player2_Ai) ){
             if(player%2 == 0){
                 winner = "X won.";
                 scoreX++;
@@ -150,59 +155,99 @@ void MainWindow::showEndGame(){
                 winner = "O won.";
                 scoreO++;
             }
+            drawWinLine();
             ui->label_turn->setText(winner.c_str());
         }
-        if(checkDraw()){
+        else if(checkDraw()){
             ui->label_turn->setText("Draw");
         }
         ui->label_O_score->setText(to_string(scoreO).c_str());
         ui->label_X_score->setText(to_string(scoreX).c_str());
         enableSpots(false);
+        return true;
     }
+    return false;
 }
+
+
 void MainWindow::checkmove(int x, int y){
     if(!isAvailableSpot(x, y))
         return;
 
-    if(player%2 == 0){
+    if(vs_player){
+        if(player%2 == 0){
+            board[x][y] = 'X';
+            turn = "O's turn.";
+        }else{
+            board[x][y] = 'O';
+            turn = "X's turn.";
+        }
+        ui->label_turn->setText(turn.c_str());
+        showSpots();
+        showEndGame();
+        player++;
+    }else if (vs_computer){
+
         board[x][y] = 'X';
-        turn = "O's turn.";
-    }else{
-        board[x][y] = 'O';
-        turn = "X's turn.";
+        showSpots();
+        if(showEndGame())
+            return;
+        player++;
+
+        minimax(board);
+        showSpots();
+        showEndGame();
+        player++;
     }
-    ui->label_turn->setText(turn.c_str());
-    showSpots();
-    showEndGame();
-    player++;
 }
-void MainWindow::drawWinLine(int i){
+void MainWindow::drawWinLine(){
+
+    int j = 0;
+    for(int i = 0; i < 3; i++) {
+        // Check horizontals
+        if(board[i][0] == board[i][1]  && board[i][2] == board[i][1]){
+            j=i;
+        }
+        // Check verticals
+        if(board[0][i] == board[1][i]  && board[2][i] ==  board[1][i]){
+           j= 3+i;
+        }
+
+    }
+    // Check diagonals
+    if (board[0][0] == board[1][1] && board[2][2] ==  board[1][1]) {
+        j = 6;
+    } else if (board[0][2] == board[1][1]  && board[2][0] ==  board[1][1]) {
+        j=7;
+    }
+
+
     QPicture pi;
     QPainter p(&pi);
     p.setRenderHint(QPainter::Antialiasing);
     p.setPen(QPen(Qt::red, 15));
-    if(i == 0){ //first column
+    if(j == 0){ //first column
         p.drawLine(0,40,243,40);
         ui->label_win1->setGeometry(150,70,243,81);
-    }else if (i == 1){ // 2nd column
+    }else if (j == 1){ // 2nd column
         p.drawLine(0,124,243,124);
         ui->label_win1->setGeometry(150,151,243,81);
-    } else if (i == 2){ //3rd column
+    } else if (j == 2){ //3rd column
         p.drawLine(0,207,243,207);
         ui->label_win1->setGeometry(150,232,243,81);
-    } else if (i == 3){ //1st row
+    } else if (j == 3){ //1st row
         p.drawLine(40,0,40,243);
         ui->label_win1->setGeometry(183,70,81,243);
-    } else if (i == 4){ // 2nd row
+    } else if (j == 4){ // 2nd row
         p.drawLine(124,0,124,243);
         ui->label_win1->setGeometry(264,70,81,243);
-    } else if (i == 5){ // 3rd row
+    } else if (j == 5){ // 3rd row
         p.drawLine(207,0,207,243);
         ui->label_win1->setGeometry(345,70,81,243);
-    } else if (i == 6){ //1st diagonal
+    } else if (j == 6){ //1st diagonal
         p.drawLine(0,0,243,243);
         ui->label_win1->setGeometry(150,70,243,243);
-    } else if (i == 7){ //2nd diagonal
+    } else if (j == 7){ //2nd diagonal
         p.drawLine(0,243,243,0);
         ui->label_win1->setGeometry(150,70,243,243);
     }
@@ -252,6 +297,77 @@ void MainWindow::enableSpots(bool x){
     ui->place_6->setEnabled(x);
     ui->place_7->setEnabled(x);
     ui->place_8->setEnabled(x);
+}
+
+
+void MainWindow::minimax(char AIboard[3][3]) {
+    int bestMoveScore = 100; // -100 is arbitrary
+    int bestMove_x;
+    int bestMove_y;
+
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            if(AIboard[i][j] == '-') {
+                AIboard[i][j] = 'O';
+                int tempMoveScore = maxSearch(AIboard);
+                if(tempMoveScore <= bestMoveScore) {
+                    bestMoveScore = tempMoveScore;
+                    bestMove_x = i;
+                    bestMove_y = j;
+                }
+                AIboard[i][j] = '-';
+            }
+        }
+    }
+    board[bestMove_x][bestMove_y] = 'O';
+
+}
+int MainWindow::maxSearch(char AIboard[3][3]) {
+    if(checkDraw())
+        return score();
+
+    int bestMoveScore = -1000;
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            if(AIboard[i][j] == '-') {
+                AIboard[i][j] = 'X';
+                int tempMoveScore = minSearch(AIboard);
+                if(tempMoveScore >= bestMoveScore) {
+                    bestMoveScore = tempMoveScore;
+                }
+                AIboard[i][j] = '-';
+            }
+        }
+    }
+
+    return bestMoveScore;
+}
+int MainWindow::minSearch(char AIboard[3][3]) {
+    if(checkDraw())
+        return score();
+
+    int bestMoveScore = 1000;
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            if(AIboard[i][j] == '-') {
+                AIboard[i][j] = 'O';
+                int tempMove = maxSearch(AIboard);
+                if(tempMove <= bestMoveScore) {
+                    bestMoveScore = tempMove;
+                }
+                AIboard[i][j] = '-';
+            }
+        }
+    }
+
+    return bestMoveScore;
+}
+int MainWindow::score() {
+    if(checkwin(player1))
+            return 10;
+    else if(checkwin(player2_Ai))
+        return -10;
+    return 0;
 }
 
 
